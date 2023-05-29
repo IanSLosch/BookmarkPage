@@ -47,6 +47,15 @@ const Bookmarks = ({ data, updateData }) => {
     }
   }
 
+  const openLink = (url) => {
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      const newUrl = `https://${url}`
+      openURI(newUrl)
+    } else {
+      openURI(url)
+    }
+  }
+
   const deleteBookmark = async (indexToRemove) => {
     const existingBookmarks = await SecureStore.getItemAsync('bookmarks')
     const bookmarks = JSON.parse(existingBookmarks)
@@ -181,12 +190,7 @@ const Bookmarks = ({ data, updateData }) => {
         <View key={index} style={styles.squareContainer} >
           <TouchableOpacity
             style={{ flex: 1 }}
-            onPress={() => {
-              if (!item.url.startsWith('http://') && !item.url.startsWith('https://')) {
-                newLink = `https://${item.url}`
-              }
-              openURI(newLink)
-            }}
+            onPress={() => openLink(item.url)}
             onLongPress={() => {
               Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
               setModal(item)

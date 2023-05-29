@@ -30,7 +30,9 @@ const Styles = StyleSheet.create({
   container: {
     backgroundColor: '#050505',
     paddingHorizontal: 10,
-    paddingTop: Constants.statusBarHeight + 15
+    // paddingTop: Constants.statusBarHeight + 15
+    paddingTop:
+                Platform.OS === 'ios' ? 0 : Constants.statusBarHeight
   },
   inputWrapper: {
     height: 50,
