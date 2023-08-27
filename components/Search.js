@@ -6,7 +6,7 @@ const Search = () => {
   const [searchQuery, setSearchQuery] = useState('')
 
   const handleSearch = () => {
-    const url = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`
+    const url = `https://duckduckgo.com/?q=${encodeURIComponent(searchQuery)}`
     Linking.openURL(url)
   }
 

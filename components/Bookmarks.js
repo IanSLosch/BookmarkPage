@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback
 } from "react-native"
+import Toolbar from "./Toolbar"
 import * as Haptics from 'expo-haptics'
 import * as SecureStore from 'expo-secure-store'
 import openURI from "../utility/openURL"
@@ -69,6 +70,16 @@ const Bookmarks = ({ data, updateData }) => {
     } else {
       console.log('Bookmark Not Found')
     }
+  }
+
+  const openNewBookmarkModal = () => {
+    setModal({
+      text: '',
+      url: '',
+      color: ''
+    })
+    setModalButtons('add')
+    setModalVisible(true)
   }
 
   const handleEditBookmark = async (indexToEdit) => {
@@ -198,13 +209,14 @@ const Bookmarks = ({ data, updateData }) => {
               setBookmarkToEdit(index)
               setModalVisible(true)
             }}
-            delayLongPress={1000}
+            delayLongPress={500}
           >
             <View style={{
               flex: 1,
               backgroundColor: item.color,
               alignItems: 'center',
               justifyContent: 'center',
+              borderRadius: 30
             }} >
               <Text adjustsFontSizeToFit={true} numberOfLines={1} style={styles.bookmarkText} >
                 {item.text}
@@ -218,107 +230,103 @@ const Bookmarks = ({ data, updateData }) => {
 
 
   return (
-    <ScrollView style={styles.scrollView}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
-        <View style={styles.container}>
-          {data && <RenderSquares data={data} />}
-          <View style={styles.squareContainer}>
-            <TouchableOpacity
-              style={{ flex: 1 }}
-              onPress={() => {
-                setModal({
-                  text: '',
-                  url: '',
-                  color: ''
-                })
-                setModalButtons('add')
-                setModalVisible(true)
-              }}
-            >
-              <View style={{
-                flex: 1,
-                backgroundColor: 'grey',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }} >
-                <Text adjustsFontSizeToFit={true} numberOfLines={1} style={styles.addBookmarkText} >
-                  +
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => { setModalVisible(!modalVisible) }}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalTitle}>Bookmark</Text>
-                <TextInput
-                  placeholder='Title'
-                  onChangeText={(text) => setTitle(text)}
-                  value={title}
-                  style={styles.formInput}
-                />
-                {titleError &&
-                  <Text style={styles.errorMsg}>{titleError}</Text>
-                }
-                <TextInput
-                  placeholder='URL'
-                  onChangeText={(text) => setLink(text)}
-                  value={link}
-                  style={styles.formInput}
-                />
-                {urlError &&
-                  <Text style={styles.errorMsg}>{urlError}</Text>
-                }
-                <TextInput
-                  placeholder='Color'
-                  onChangeText={(text) => setBlockColor(text)}
-                  value={blockColor}
-                  style={styles.formInput}
-                />
-                {colorError &&
-                  <Text style={styles.errorMsg}>{colorError}</Text>
-                }
-                {modalMode === 'edit' &&
-                  <View style={{ flexDirection: "row" }}>
-                    <View style={styles.modalButtons}>
-                      <Button
-                        title='Delete'
-                        color='#f54298'
-                        onPress={() => {
-                          setModalVisible(!modalVisible)
-                          deleteBookmark(bookmarkToEdit)
-                        }}
-                      />
-                    </View>
-                    <View style={styles.modalButtons}>
-                      <Button
-                        title='Save'
-                        color='#08c4c7'
-                        onPress={() => {
-                          handleEditBookmark(bookmarkToEdit)
-                        }}
-                      />
-                    </View>
-                  </View>
-                }
-                {modalMode === 'add' && <Button
-                  title='Add'
-                  color='#08c4c7'
-                  onPress={() => {
-                    handleAddBookmark()
-                  }}
-                />}
-              </View>
+    <>
+      <ScrollView style={styles.scrollView} >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+          <View style={styles.container}>
+            {data && <RenderSquares data={data} />}
+            <View style={styles.squareContainer} >
+              <TouchableOpacity
+                style={{ flex: 1 }}
+                onPress={openNewBookmarkModal}
+              >
+                <View style={{
+                  flex: 1,
+                  backgroundColor: '#E6E6FA',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 30
+                }} >
+                  <Text adjustsFontSizeToFit={true} numberOfLines={1} style={styles.addBookmarkText} >
+                    +
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
-          </Modal>
-        </View>
-      </TouchableWithoutFeedback>
-    </ScrollView>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => { setModalVisible(!modalVisible) }}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalTitle}>Edit Bookmark</Text>
+                  <TextInput
+                    placeholder='Title'
+                    onChangeText={(text) => setTitle(text)}
+                    value={title}
+                    style={styles.formInput}
+                  />
+                  {titleError &&
+                    <Text style={styles.errorMsg}>{titleError}</Text>
+                  }
+                  <TextInput
+                    placeholder='URL'
+                    onChangeText={(text) => setLink(text)}
+                    value={link}
+                    style={styles.formInput}
+                  />
+                  {urlError &&
+                    <Text style={styles.errorMsg}>{urlError}</Text>
+                  }
+                  <TextInput
+                    placeholder='Color'
+                    onChangeText={(text) => setBlockColor(text)}
+                    value={blockColor}
+                    style={styles.formInput}
+                  />
+                  {colorError &&
+                    <Text style={styles.errorMsg}>{colorError}</Text>
+                  }
+                  {modalMode === 'edit' &&
+                    <View style={{ flexDirection: "row" }}>
+                      <View style={styles.modalButtons}>
+                        <Button
+                          title='Delete'
+                          color='#f54298'
+                          onPress={() => {
+                            setModalVisible(!modalVisible)
+                            deleteBookmark(bookmarkToEdit)
+                          }}
+                        />
+                      </View>
+                      <View style={styles.modalButtons}>
+                        <Button
+                          title='Save'
+                          color='#08c4c7'
+                          onPress={() => {
+                            handleEditBookmark(bookmarkToEdit)
+                          }}
+                        />
+                      </View>
+                    </View>
+                  }
+                  {modalMode === 'add' && <Button
+                    title='Add'
+                    color='#08c4c7'
+                    onPress={() => {
+                      handleAddBookmark()
+                    }}
+                  />}
+                </View>
+              </View>
+            </Modal>
+          </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+      <Toolbar openModal={openNewBookmarkModal} />
+    </>
   )
 }
 
@@ -341,7 +349,7 @@ const styles = StyleSheet.create({
   modalView: {
     width: '80%',
     backgroundColor: 'white',
-    borderRadius: 15,
+    borderRadius: 30,
     padding: 35,
     shadowColor: '#000',
     shadowOpacity: 0.25,
@@ -374,8 +382,10 @@ const styles = StyleSheet.create({
   formInput: {
     fontSize: 14,
     padding: 5,
-    marginBottom: 15,
-    backgroundColor: '#f2f2f2'
+    marginBottom: 20,
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#DCDCDC',
+    backgroundColor: '#F8F8FF'
   },
   modalButtons: {
     flex: 1
@@ -387,4 +397,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Bookmarks
+export default Bookmarks;

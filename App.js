@@ -33,5 +33,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#050505',
+    position: 'relative',
   },
 })
